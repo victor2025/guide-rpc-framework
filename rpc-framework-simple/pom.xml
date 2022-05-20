@@ -15,11 +15,13 @@
             <artifactId>rpc-framework-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--netty网络传输-->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>${netty.version}</version>
         </dependency>
+        <!--kryo序列化-->
         <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo</artifactId>
