@@ -11,6 +11,7 @@ import java.lang.annotation.Annotation;
  *
  * @author shuang.kou
  * @createTime 2020年08月10日 21:42:00
+ * 基于Spring扫描器的自定义扫描器
  */
 public class CustomScanner extends ClassPathBeanDefinitionScanner {
 

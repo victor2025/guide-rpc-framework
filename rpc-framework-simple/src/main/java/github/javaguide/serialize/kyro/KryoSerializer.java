@@ -48,7 +48,7 @@ public class KryoSerializer implements Serializer {
     @Override
     public <T> T deserialize(byte[] bytes, Class<T> clazz) {
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-             Input input = new Input(byteArrayInputStream)) {
+            Input input = new Input(byteArrayInputStream)) {
             Kryo kryo = kryoThreadLocal.get();
             // byte->Object:从byte数组中反序列化出对对象
             Object o = kryo.readObject(input, clazz);
