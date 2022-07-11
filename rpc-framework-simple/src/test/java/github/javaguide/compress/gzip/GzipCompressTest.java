@@ -2,7 +2,7 @@ package github.javaguide.compress.gzip;
 
 import github.javaguide.compress.Compress;
 import github.javaguide.remoting.dto.RpcRequest;
-import github.javaguide.serialize.kyro.KryoSerializer;
+import github.javaguide.serialize.kryo.KryoSerializer;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

@@ -11,6 +11,16 @@
 8. 通过改善的SPI机制实现框架的扩展
 
 ---
+## 项目难点
+- RPC架构搭建
+- RPC协议实现
+- 基于Netty的网络传输，粘包拆包的处理
+- 服务的注册和发现
+- 动态代理
+- 负载均衡
+- 基于SPI机制的框架扩展
+
+---
 
 ## 业务架构
 - 分为服务提供者，服务消费者和注册中心三个部分
@@ -24,35 +34,64 @@
 - 通过服务地址，经负载均衡算法选出合适的服务提供者后，对远程服务进行调用
 
 ---
+## 调用链分析
+TODO
+
+---
 
 ## 细节
 #### 1.Netty相关
+1. Netty架构
 - 长连接
 - 心跳机制
 - 粘包拆包
+通过在数据包中标记数据包大小的方法处理粘包拆包。
 - 基于TCP协议
 
 #### 2.负载均衡的实现
 - 轮询 Round Robin
 - 加权轮询 Weighted Round Robin
 - 随机 Random
-- 一致性哈希 Consistent Hash
+- 一致性哈希 Consistent Hash 
+  1. 一致性哈希的概念
+  2. 一致性哈希的代码实现
 
 #### 3.心跳机制的实现
 
 #### 4.长连接还是短连接
 
-#### 5.SPI机制如何改善
+#### 5.SPI机制
+- SPI基本概念
+- SPI机制的增强
 
 #### 6.zookeeper相关
+- 采用的zookeeper客户端(curator)
+- zookeeper的存储结构
+- zookeeper集群leader选举机制
 
 #### 7.RPC协议如何实现
 
-#### 8.kryo相关
-- 不同序列化协议对比 hession2，protostuff
+#### 8.序列化相关
+- 不同序列化协议对比 kryo, hessian2，protostuff
 
 #### 9.框架的模块如何组织(spring容器化)
 
 #### 10.动态代理
+- JDK动态代理
+- CGLIB动态代理
 
 #### 11.线程池的使用
+
+#### 12.同一个接口具有多个实现类情况的处理
+- 采用group标记区分同一个接口的不同实现类
+- 在RPC请求体中，定义当前请求的服务所在的group，服务提供端就可以根据group找到对应的实现类，实现服务的调用
+- 比如：UserService接口的getUserInfo方法，在login和search场景中需求不同，就可以将不同场景下的UserService服务注册在不同的group中
+
+#### 13.业务相关
+1. 服务的注册和发现
+
+#### 14.spring相关
+1. 采用spring-context
+引入spring-context，采用springIOC容器作为bean管理工具
+
+通过自定义Scanner实现自定义注解(RpcService)的扫描

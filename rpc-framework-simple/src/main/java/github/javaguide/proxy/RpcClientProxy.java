@@ -75,10 +75,12 @@ public class RpcClientProxy implements InvocationHandler {
                 .build();
         RpcResponse<Object> rpcResponse = null;
         if (rpcRequestTransport instanceof NettyRpcClient) {
+            // 异步非阻塞等待调用结果
             CompletableFuture<RpcResponse<Object>> completableFuture = (CompletableFuture<RpcResponse<Object>>) rpcRequestTransport.sendRpcRequest(rpcRequest);
             rpcResponse = completableFuture.get();
         }
         if (rpcRequestTransport instanceof SocketRpcClient) {
+            // 同步阻塞等待调用结果
             rpcResponse = (RpcResponse<Object>) rpcRequestTransport.sendRpcRequest(rpcRequest);
         }
         this.check(rpcResponse, rpcRequest);

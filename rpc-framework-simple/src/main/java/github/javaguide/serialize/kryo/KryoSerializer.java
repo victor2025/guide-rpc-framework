@@ -1,4 +1,4 @@
-package github.javaguide.serialize.kyro;
+package github.javaguide.serialize.kryo;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;

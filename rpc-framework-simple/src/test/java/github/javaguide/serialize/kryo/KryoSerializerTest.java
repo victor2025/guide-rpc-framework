@@ -1,4 +1,4 @@
-package github.javaguide.serialize.kyro;
+package github.javaguide.serialize.kryo;
 
 import github.javaguide.remoting.dto.RpcRequest;
 import org.junit.jupiter.api.Test;

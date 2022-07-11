@@ -39,7 +39,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @createTime on 2020/10/2
  * @see <a href="https://zhuanlan.zhihu.com/p/95621344">LengthFieldBasedFrameDecoder解码器</a>
  */
-
 @Slf4j
 public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
     private static final AtomicInteger ATOMIC_INTEGER = new AtomicInteger(0);

@@ -38,6 +38,7 @@ public class SpringBeanPostProcessor implements BeanPostProcessor {
     @SneakyThrows
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        // 通过RpcService注解实现服务的自动注册
         if (bean.getClass().isAnnotationPresent(RpcService.class)) {
             log.info("[{}] is annotated with  [{}]", bean.getClass().getName(), RpcService.class.getCanonicalName());
             // get RpcService annotation
@@ -57,6 +58,7 @@ public class SpringBeanPostProcessor implements BeanPostProcessor {
         Class<?> targetClass = bean.getClass();
         Field[] declaredFields = targetClass.getDeclaredFields();
         for (Field declaredField : declaredFields) {
+            // 通过注解实现服务的消费
             RpcReference rpcReference = declaredField.getAnnotation(RpcReference.class);
             if (rpcReference != null) {
                 RpcServiceConfig rpcServiceConfig = RpcServiceConfig.builder()
