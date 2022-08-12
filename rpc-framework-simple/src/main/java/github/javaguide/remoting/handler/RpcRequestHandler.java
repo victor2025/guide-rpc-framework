@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 public class RpcRequestHandler {
     private final ServiceProvider serviceProvider;
 
+    // 硬编码为zookeeper注册中心
     public RpcRequestHandler() {
         serviceProvider = SingletonFactory.getInstance(ZkServiceProviderImpl.class);
     }
@@ -28,7 +29,9 @@ public class RpcRequestHandler {
      * Processing rpcRequest: call the corresponding method, and then return the method
      */
     public Object handle(RpcRequest rpcRequest) {
+        // 根据服务名获取指定服务对象
         Object service = serviceProvider.getService(rpcRequest.getRpcServiceName());
+        // 执行服务对象的指定方法
         return invokeTargetMethod(rpcRequest, service);
     }
 
