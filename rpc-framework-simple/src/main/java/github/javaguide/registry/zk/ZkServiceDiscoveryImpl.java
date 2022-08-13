@@ -28,10 +28,20 @@ public class ZkServiceDiscoveryImpl implements ServiceDiscovery {
         this.loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension("loadBalance");
     }
 
+    /**
+     * @param rpcRequest:
+     * @return: java.net.InetSocketAddress
+     * @author: victor2022
+     * @date: 2022/8/13 下午10:45
+     * @description: 查找服务列表，找到自己所需的服务
+     */
     @Override
     public InetSocketAddress lookupService(RpcRequest rpcRequest) {
+        // 获取服务名
         String rpcServiceName = rpcRequest.getRpcServiceName();
+        // zk服务端
         CuratorFramework zkClient = CuratorUtils.getZkClient();
+        // 找到对应服务的列表
         List<String> serviceUrlList = CuratorUtils.getChildrenNodes(zkClient, rpcServiceName);
         if (CollectionUtil.isEmpty(serviceUrlList)) {
             throw new RpcException(RpcErrorMessageEnum.SERVICE_CAN_NOT_BE_FOUND, rpcServiceName);

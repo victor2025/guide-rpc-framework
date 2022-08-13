@@ -89,6 +89,14 @@ public class NettyRpcServerHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    /**
+     * @param ctx:
+     * @param evt:
+     * @return: void
+     * @author: victor2022
+     * @date: 2022/8/13 下午10:27
+     * @description: 服务提供端的心跳机制实现
+     */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
