@@ -12,7 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * service discovery based on zookeeper
@@ -25,9 +28,12 @@ public class ZkServiceDiscoveryImpl implements ServiceDiscovery {
 
     // 负载均衡插件
     private final LoadBalance loadBalance;
+    // 本地服务缓存，新增
+    private Map<String,InetSocketAddress> serviceCache;
 
     public ZkServiceDiscoveryImpl() {
         this.loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension("loadBalance");
+        serviceCache = new ConcurrentHashMap<>();
     }
 
     /**
@@ -43,20 +49,27 @@ public class ZkServiceDiscoveryImpl implements ServiceDiscovery {
     public InetSocketAddress lookupService(RpcRequest rpcRequest) {
         // 获取服务名
         String rpcServiceName = rpcRequest.getRpcServiceName();
-        // zk服务端
-        CuratorFramework zkClient = CuratorUtils.getZkClient();
-        // 找到对应服务的列表
-        List<String> serviceUrlList = CuratorUtils.getChildrenNodes(zkClient, rpcServiceName);
-        // 若服务列表为空则报错
-        if (CollectionUtil.isEmpty(serviceUrlList)) {
-            throw new RpcException(RpcErrorMessageEnum.SERVICE_CAN_NOT_BE_FOUND, rpcServiceName);
+        // 先在缓存中查找
+        InetSocketAddress aim = serviceCache.get(rpcServiceName);
+        if(aim==null){
+            // zk服务端
+            CuratorFramework zkClient = CuratorUtils.getZkClient();
+            // 找到对应服务的列表
+            List<String> serviceUrlList = CuratorUtils.getChildrenNodes(zkClient, rpcServiceName);
+            // 若服务列表为空则报错
+            if (CollectionUtil.isEmpty(serviceUrlList)) {
+                throw new RpcException(RpcErrorMessageEnum.SERVICE_CAN_NOT_BE_FOUND, rpcServiceName);
+            }
+            // load balancing
+            String targetServiceUrl = loadBalance.selectServiceAddress(serviceUrlList, rpcRequest);
+            log.info("Successfully found the service address:[{}]", targetServiceUrl);
+            String[] socketAddressArray = targetServiceUrl.split(":");
+            String host = socketAddressArray[0];
+            int port = Integer.parseInt(socketAddressArray[1]);
+            // 创建新的地址对象并缓存
+            aim = new InetSocketAddress(host, port);
+            serviceCache.put(rpcServiceName,aim);
         }
-        // load balancing
-        String targetServiceUrl = loadBalance.selectServiceAddress(serviceUrlList, rpcRequest);
-        log.info("Successfully found the service address:[{}]", targetServiceUrl);
-        String[] socketAddressArray = targetServiceUrl.split(":");
-        String host = socketAddressArray[0];
-        int port = Integer.parseInt(socketAddressArray[1]);
-        return new InetSocketAddress(host, port);
+        return aim;
     }
 }
