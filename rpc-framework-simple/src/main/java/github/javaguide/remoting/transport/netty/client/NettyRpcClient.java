@@ -41,9 +41,14 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public final class NettyRpcClient implements RpcRequestTransport {
+
+    // 负责从注册中心拉取服务列表，负载均衡在此发生
     private final ServiceDiscovery serviceDiscovery;
+    // 保存未处理的请求(发送了请求但尚未收到返回消息)
     private final UnprocessedRequests unprocessedRequests;
+    // channel缓存，保存已经建立的连接
     private final ChannelProvider channelProvider;
+    // netty组件
     private final Bootstrap bootstrap;
     private final EventLoopGroup eventLoopGroup;
 
@@ -68,8 +73,11 @@ public final class NettyRpcClient implements RpcRequestTransport {
                         p.addLast(new NettyRpcClientHandler());
                     }
                 });
+        // 基于zookeeper的服务发现，采用SPI机制获取
         this.serviceDiscovery = ExtensionLoader.getExtensionLoader(ServiceDiscovery.class).getExtension("zk");
+        // 未处理的请求容器
         this.unprocessedRequests = SingletonFactory.getInstance(UnprocessedRequests.class);
+        // 已建立的连接容器
         this.channelProvider = SingletonFactory.getInstance(ChannelProvider.class);
     }
 
@@ -124,10 +132,20 @@ public final class NettyRpcClient implements RpcRequestTransport {
         return resultFuture;
     }
 
+    /**
+     * @param inetSocketAddress:
+     * @return: io.netty.channel.Channel
+     * @author: lihen
+     * @date: 2022/8/14 15:33
+     * @description: 获取与对应服务提供者的连接
+     */
     public Channel getChannel(InetSocketAddress inetSocketAddress) {
+        // 先尝试从缓存中获取连接
         Channel channel = channelProvider.get(inetSocketAddress);
         if (channel == null) {
+            // 若为空则重新建立连接
             channel = doConnect(inetSocketAddress);
+            // 添加到缓存中
             channelProvider.set(inetSocketAddress, channel);
         }
         return channel;

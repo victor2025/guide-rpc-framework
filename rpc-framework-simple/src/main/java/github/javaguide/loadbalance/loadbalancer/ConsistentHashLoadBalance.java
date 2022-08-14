@@ -37,6 +37,11 @@ public class ConsistentHashLoadBalance extends AbstractLoadBalance {
         return selector.select(rpcServiceName + Arrays.stream(rpcRequest.getParameters()));
     }
 
+    /**
+     * @author: lihen
+     * @date: 2022/8/14 12:08
+     * @description: 一致性哈希选择器
+     */
     static class ConsistentHashSelector {
         private final TreeMap<Long, String> virtualInvokers;
 

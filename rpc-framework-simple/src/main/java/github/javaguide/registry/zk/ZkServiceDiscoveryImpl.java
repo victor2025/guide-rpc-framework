@@ -22,6 +22,8 @@ import java.util.List;
  */
 @Slf4j
 public class ZkServiceDiscoveryImpl implements ServiceDiscovery {
+
+    // 负载均衡插件
     private final LoadBalance loadBalance;
 
     public ZkServiceDiscoveryImpl() {
@@ -34,6 +36,8 @@ public class ZkServiceDiscoveryImpl implements ServiceDiscovery {
      * @author: victor2022
      * @date: 2022/8/13 下午10:45
      * @description: 查找服务列表，找到自己所需的服务
+     * dubbo实现了服务列表的主动拉取(第一次调用某服务时)和自动推送(服务列表发生变化时)
+     * TODO 没有实现服务列表的自动推送
      */
     @Override
     public InetSocketAddress lookupService(RpcRequest rpcRequest) {
@@ -43,6 +47,7 @@ public class ZkServiceDiscoveryImpl implements ServiceDiscovery {
         CuratorFramework zkClient = CuratorUtils.getZkClient();
         // 找到对应服务的列表
         List<String> serviceUrlList = CuratorUtils.getChildrenNodes(zkClient, rpcServiceName);
+        // 若服务列表为空则报错
         if (CollectionUtil.isEmpty(serviceUrlList)) {
             throw new RpcException(RpcErrorMessageEnum.SERVICE_CAN_NOT_BE_FOUND, rpcServiceName);
         }
