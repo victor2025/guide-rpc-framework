@@ -12,6 +12,10 @@ public class NettyClientMain {
     public static void main(String[] args) throws InterruptedException {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(NettyClientMain.class);
         HelloController helloController = (HelloController) applicationContext.getBean("helloController");
-        helloController.test();
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+            System.out.println(helloController.hello(new Hello("111","222")));
+        }
+        System.out.println((System.currentTimeMillis()-t0)/1000);
     }
 }

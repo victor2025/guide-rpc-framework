@@ -13,6 +13,7 @@ import java.io.Serializable;
 /**
  * @author shuang.kou
  * @createTime 2020年05月12日 16:15:00
+ * rpc响应类
  */
 @AllArgsConstructor
 @NoArgsConstructor

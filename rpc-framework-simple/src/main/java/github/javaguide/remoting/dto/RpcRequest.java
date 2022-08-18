@@ -11,6 +11,7 @@ import java.io.Serializable;
 /**
  * @author shuang.kou
  * @createTime 2020年05月10日 08:24:00
+ * rpc请求类
  */
 @AllArgsConstructor
 @NoArgsConstructor

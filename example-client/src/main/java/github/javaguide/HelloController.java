@@ -21,4 +21,15 @@ public class HelloController {
             System.out.println(helloService.hello(new Hello("111", "222")));
         }
     }
+
+    /**
+     * @param hello:
+     * @return: void
+     * @author: lihen
+     * @date: 2022/8/18 13:18
+     * @description: 压力测试
+     */
+    public String hello(Hello hello){
+        return helloService.hello(hello);
+    }
 }

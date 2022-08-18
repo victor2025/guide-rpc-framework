@@ -65,6 +65,14 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
         super(maxFrameLength, lengthFieldOffset, lengthFieldLength, lengthAdjustment, initialBytesToStrip);
     }
 
+    /**
+     * @param ctx:
+     * @param in:
+     * @return: java.lang.Object
+     * @author: lihen
+     * @date: 2022/8/18 12:07
+     * @description: 反序列化
+     */
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
         Object decoded = super.decode(ctx, in);
@@ -86,46 +94,70 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
     }
 
 
+    /**
+     * @param in:
+     * @return: java.lang.Object
+     * @author: lihen
+     * @date: 2022/8/18 12:06
+     * @description: 反序列化流程
+     */
     private Object decodeFrame(ByteBuf in) {
         // note: must read ByteBuf in order
+        // 检查魔数
         checkMagicNumber(in);
+        // 检查版本
         checkVersion(in);
+        // 获取全长，处理粘包拆包
         int fullLength = in.readInt();
         // build RpcMessage object
+        // 获取消息类型
         byte messageType = in.readByte();
+        // 获取序列化类型
         byte codecType = in.readByte();
+        // 获取压缩类型
         byte compressType = in.readByte();
+        // 获取请求Id
         int requestId = in.readInt();
+        // 建立请求对象
         RpcMessage rpcMessage = RpcMessage.builder()
                 .codec(codecType)
                 .requestId(requestId)
                 .messageType(messageType).build();
+        // 若为心跳包，则直接将请求体设置为心跳常量
         if (messageType == RpcConstants.HEARTBEAT_REQUEST_TYPE) {
             rpcMessage.setData(RpcConstants.PING);
             return rpcMessage;
         }
+        // 若为心跳响应包，则直接设置为心跳返回常量
         if (messageType == RpcConstants.HEARTBEAT_RESPONSE_TYPE) {
             rpcMessage.setData(RpcConstants.PONG);
             return rpcMessage;
         }
+        // 获取请求体长度
         int bodyLength = fullLength - RpcConstants.HEAD_LENGTH;
+        // 按照长度获取请求体
         if (bodyLength > 0) {
             byte[] bs = new byte[bodyLength];
             in.readBytes(bs);
             // decompress the bytes
+            // 解压
             String compressName = CompressTypeEnum.getName(compressType);
             Compress compress = ExtensionLoader.getExtensionLoader(Compress.class)
                     .getExtension(compressName);
             bs = compress.decompress(bs);
             // deserialize the object
+            // 反序列化
             String codecName = SerializationTypeEnum.getName(rpcMessage.getCodec());
             log.info("codec name: [{}] ", codecName);
             Serializer serializer = ExtensionLoader.getExtensionLoader(Serializer.class)
                     .getExtension(codecName);
+            // 根据消息体类型反序列化
             if (messageType == RpcConstants.REQUEST_TYPE) {
+                // 反序列化rpc请求
                 RpcRequest tmpValue = serializer.deserialize(bs, RpcRequest.class);
                 rpcMessage.setData(tmpValue);
             } else {
+                // 反序列化rpc响应
                 RpcResponse tmpValue = serializer.deserialize(bs, RpcResponse.class);
                 rpcMessage.setData(tmpValue);
             }
@@ -134,6 +166,13 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
 
     }
 
+    /**
+     * @param in:
+     * @return: void
+     * @author: lihen
+     * @date: 2022/8/18 12:06
+     * @description: 检查版本是否正确
+     */
     private void checkVersion(ByteBuf in) {
         // read the version and compare
         byte version = in.readByte();
@@ -142,6 +181,13 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
         }
     }
 
+    /**
+     * @param in:
+     * @return: void
+     * @author: lihen
+     * @date: 2022/8/18 12:06
+     * @description: 检查魔数是否正确
+     */
     private void checkMagicNumber(ByteBuf in) {
         // read the first 4 bit, which is the magic number, and compare
         int len = RpcConstants.MAGIC_NUMBER.length;
