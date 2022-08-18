@@ -1,0 +1,3 @@
+kryo=com.victor2022.serialize.kryo.KryoSerializer
+protostuff=com.victor2022.serialize.protostuff.ProtostuffSerializer
+hessian=com.victor2022.serialize.hessian.HessianSerializer

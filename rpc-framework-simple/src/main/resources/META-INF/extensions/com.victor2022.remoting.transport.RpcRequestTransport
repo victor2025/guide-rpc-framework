@@ -1,0 +1,2 @@
+netty=com.victor2022.remoting.transport.netty.client.NettyRpcClient
+socket=com.victor2022.remoting.transport.socket.SocketRpcClient

@@ -1,0 +1,1 @@
+loadBalance=com.victor2022.loadbalance.loadbalancer.ConsistentHashLoadBalance
