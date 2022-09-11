@@ -15,7 +15,7 @@ dirname=simple-rpc-framework-spring-boot-starter-$version
 # 编译打包
 # 移动文件
 mkdir $dirname
-cp out/artifacts/simple_rpc_framework_spring_boot_starter_jar/simple_rpc_framework_spring_boot_starter_jar.jar $dirname/$dirname.jar
+cp out/artifacts/simple_rpc_framework_spring_boot_starter_jar/simple-rpc-framework-spring-boot-starter_jar.jar $dirname/$dirname.jar
 # 创建release文件夹
 mkdir releases
 mv $dirname releases/$dirname
