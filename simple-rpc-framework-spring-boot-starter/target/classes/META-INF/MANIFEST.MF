@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Main-Class: 
+Class-Path: slf4j-simple-1.7.25.jar protostuff-core-1.7.2.jar jsr305-3.0
+ .2.jar checker-qual-3.8.0.jar minlog-1.3.0.jar spring-jcl-5.2.7.RELEASE
+ .jar curator-recipes-4.2.0.jar log4j-1.2.17.jar spring-beans-5.2.7.RELE
+ ASE.jar reflectasm-1.11.3.jar curator-client-4.2.0.jar objenesis-2.5.1.
+ jar spring-boot-2.6.2.jar protostuff-runtime-1.7.2.jar spring-expressio
+ n-5.2.7.RELEASE.jar spring-boot-autoconfigure-2.6.2.jar spring-context-
+ 5.2.7.RELEASE.jar netty-all-4.1.42.Final.jar guava-30.1.1-jre.jar error
+ _prone_annotations-2.5.1.jar failureaccess-1.0.1.jar asm-5.0.4.jar kryo
+ -4.0.2.jar spring-core-5.2.7.RELEASE.jar spring-aop-5.2.7.RELEASE.jar j
+ 2objc-annotations-1.3.jar curator-framework-4.2.0.jar slf4j-api-1.7.25.
+ jar protostuff-collectionschema-1.7.2.jar protostuff-api-1.7.2.jar hess
+ ian-4.0.65.jar netty-3.10.6.Final.jar audience-annotations-0.5.0.jar co
+ mmons-cli-1.2.jar listenablefuture-9999.0-empty-to-avoid-conflict-with-
+ guava.jar zookeeper-3.5.4-beta.jar
+
